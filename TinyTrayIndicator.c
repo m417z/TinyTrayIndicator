@@ -15,7 +15,11 @@ BOOL NotificationIcon(HWND hWnd, DWORD dwMessage, WORD wIcon)
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = UWM_NOTIFYICON;
 	if(wIcon > 0)
-		nid.hIcon = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(wIcon), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
+	{
+		nid.hIcon = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(wIcon),
+			IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
+	}
+
 	lstrcpy(nid.szTip, L"TinyTrayIndicator");
 	return Shell_NotifyIcon(dwMessage, &nid);
 }
