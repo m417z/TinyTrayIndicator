@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <shlwapi.h>
 #include "buffer.h"
 #include "resource.h"
 
@@ -83,6 +84,39 @@ void main()
 		ExitProcess(1);
 	}
 
+	const WCHAR *pszClassName = L"TinyTrayIndicator";
+	if(argc > 1)
+	{
+		pszClassName = argv[1];
+	}
+
+	HWND hRunningWnd = FindWindow(pszClassName, NULL);
+
+	if(argc > 2)
+	{
+		if(!hRunningWnd)
+		{
+			MessageBox(NULL, L"Couldn't find window", L"Error", MB_ICONERROR);
+			ExitProcess(1);
+		}
+
+		if(lstrcmpi(argv[2], L"close") == 0)
+		{
+			PostMessage(hRunningWnd, WM_CLOSE, 0, 0);
+		}
+		else
+		{
+			PostMessage(hRunningWnd, UWM_CHANGEICON, StrToInt(argv[2]), 0);
+		}
+		ExitProcess(0);
+	}
+
+	if(hRunningWnd)
+	{
+		MessageBox(NULL, L"A window with that class name already exists", L"Error", MB_ICONERROR);
+		ExitProcess(1);
+	}
+
 	WNDCLASSEX wc;
 	ZeroMemory(&wc, sizeof(wc));
 	wc.cbSize = sizeof(wc);
@@ -91,7 +125,7 @@ void main()
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wc.lpszClassName = argc > 1 ? argv[1] : L"TinyTrayIndicator";
+	wc.lpszClassName = pszClassName;
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
 	if(!RegisterClassEx(&wc))
