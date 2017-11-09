@@ -35,7 +35,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch(uMsg)
 	{
 	case WM_CREATE:
-		NotificationIcon(hWnd, NIM_ADD, IDI_MAINICON);
+		NotificationIcon(hWnd, NIM_ADD, IDI_ICON1);
 		break;
 
 	case UWM_CHANGEICON:
