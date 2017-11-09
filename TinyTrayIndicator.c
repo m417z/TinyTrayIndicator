@@ -7,6 +7,17 @@
 
 BOOL NotificationIcon(HWND hWnd, DWORD dwMessage, WORD wIcon)
 {
+	HICON hIcon = NULL;
+	if(wIcon != 0)
+	{
+		hIcon = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(wIcon),
+			IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
+		if(!hIcon)
+		{
+			return FALSE;
+		}
+	}
+
 	NOTIFYICONDATA nid;
 	ZeroMemory(&nid, sizeof(nid));
 	nid.cbSize = NOTIFYICONDATA_V1_SIZE;
@@ -14,12 +25,7 @@ BOOL NotificationIcon(HWND hWnd, DWORD dwMessage, WORD wIcon)
 	nid.uID = 1;
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = UWM_NOTIFYICON;
-	if(wIcon > 0)
-	{
-		nid.hIcon = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(wIcon),
-			IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
-	}
-
+	nid.hIcon = hIcon;
 	lstrcpy(nid.szTip, L"TinyTrayIndicator");
 	return Shell_NotifyIcon(dwMessage, &nid);
 }
@@ -33,7 +39,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case UWM_CHANGEICON:
-		NotificationIcon(hWnd, NIM_MODIFY, (WORD)wParam);
+		if((WORD)wParam != 0)
+		{
+			NotificationIcon(hWnd, NIM_MODIFY, (WORD)wParam);
+		}
 		break;
 
 	case UWM_NOTIFYICON:
