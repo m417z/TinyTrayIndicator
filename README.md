@@ -3,16 +3,20 @@ A tiny command line tool to show an indicator icon in the notification area.
 
 # Usage
 > TinyTrayIndicator.exe
+
 Creates a new instance with the `TinyTrayIndicator` class name.
 
 > TinyTrayIndicator.exe custom_class_name
+
 Creates a new instance with the `custom_class_name` class name.
 
 > TinyTrayIndicator.exe custom_class_name 123
+
 Creates a new instance with the `custom_class_name` class name and icon id `123`.
 If an instance with the `custom_class_name` class name already exists, changes its icon id `123`.
 
 > TinyTrayIndicator.exe custom_class_name close
+
 Closes the instance with the `custom_class_name` class name.
 
 # Adding new icons
