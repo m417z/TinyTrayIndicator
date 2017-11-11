@@ -91,29 +91,36 @@ void main()
 	}
 
 	HWND hRunningWnd = FindWindow(pszClassName, NULL);
+	WORD wInitialIcon = IDI_ICON1;
 
 	if(argc > 2)
 	{
-		if(!hRunningWnd)
-		{
-			MessageBox(NULL, L"Couldn't find window", L"Error", MB_ICONERROR);
-			ExitProcess(1);
-		}
-
 		if(lstrcmpi(argv[2], L"close") == 0)
 		{
+			if(!hRunningWnd)
+			{
+				MessageBox(NULL, L"Couldn't find a running instance with the given class name",
+					L"Error", MB_ICONERROR);
+				ExitProcess(1);
+			}
+
 			PostMessage(hRunningWnd, WM_CLOSE, 0, 0);
+			ExitProcess(0);
 		}
-		else
+
+		wInitialIcon = (WORD)StrToInt(argv[2]);
+
+		if(hRunningWnd)
 		{
 			PostMessage(hRunningWnd, UWM_CHANGEICON, StrToInt(argv[2]), 0);
+			ExitProcess(0);
 		}
-		ExitProcess(0);
 	}
 
 	if(hRunningWnd)
 	{
-		MessageBox(NULL, L"A window with that class name already exists", L"Error", MB_ICONERROR);
+		MessageBox(NULL, L"An instance with the given class name already exists",
+			L"Error", MB_ICONERROR);
 		ExitProcess(1);
 	}
 
@@ -134,7 +141,8 @@ void main()
 		ExitProcess(1);
 	}
 
-	HWND hWnd = CreateWindow(wc.lpszClassName, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, wc.hInstance, NULL);
+	HWND hWnd = CreateWindow(wc.lpszClassName, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE,
+		NULL, wc.hInstance, &wInitialIcon);
 	if(!hWnd)
 	{
 		MessageBox(NULL, L"Window creation failed", L"Error", MB_ICONERROR);
